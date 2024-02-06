@@ -1,0 +1,36 @@
+body {
+  font-family: sans-serif;
+}
+
+.pokemon-info {
+  display: flex;
+  gap: 20px;
+}
+
+.pokemon-stats div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+main {
+  padding: 30px;
+}
+
+.pokemon-details {
+  display: flex;
+  gap: 50px;
+}
+
+.image-stats img {
+  width: 350px;
+}
+
+.sprite-name img {
+  width: 75px;
+}
+
+.sprite-name {
+  display: flex;
+  align-items: center;
+}

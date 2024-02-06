@@ -3,11 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Pokémon Search App</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  
+  <main>
+    <div class="search-pokemon-container">
+      <div class="search-pokemon">
+        <input required type="text" name="search-pokemon" id="search-input">
+        <button id="search-button">Search</button>
+      </div>
+      <div class="pokemon-hints">
+        <p></p>
+      </div>
+    </div>
+    <div id="pokemon-container" class="pokemon-container">
+      <div class="sprite-name">
+        <img class="sprite" src="images/pokemon2.jpg" alt="">
+        <h2 id="pokemon-name">Charmander</h2>
+        &nbsp
+        <h2 id="pokemon-id">#4</h2>
+      </div>
+      <div class="pokemon-info">
+        <div class="image-stats">
+          <img src="images/pokemon2.jpg" alt="">
+          <div class="pokemon-stats">
+            <div>
+              <h4>HP:</h4>
+              <p id="hp">35</p>
+            </div>
+            <div>
+              <h4>Attack:</h4>
+              <p id="attack">55</p>
+            </div>
+            <div>
+              <h4>Deffense:</h4>
+              <p id="defense">40</p>
+            </div>
+            <div>
+              <h4>Sp. Attack:</h4>
+              <p id="special-attack">50</p>
+            </div>
+            <div>
+              <h4>Sp. Defense</h4>
+              <p id="special-defense">50</p>
+            </div>
+            <div>
+              <h4>Speed:</h4>
+              <p id="speed">90</p>
+            </div>
+          </div>
+        </div>
+        <div class="more-info">
+          <p>La llama de su cola indica su fuerza vital. Si está débil, la llama arderá más tenue.</p>
+          <p>Versions: <span>1</span> <span>2</span></p>
+          <div class="pokemon-details">
+            <div>
+              <h4>Height</h4>
+              <p id="height">0.6m</p>
+              <h4>Weight</h4>
+              <p id="weight">8.5 kg</p>
+              <h4>Gender</h4>
+              <p>M F</p>
+            </div>
+            <div>
+              <h4>Category</h4>
+              <p>Lizard</p>
+              <h4>Ablility</h4>
+              <p>Mar llamas</p>
+            </div>
+          </div>
+          <h3>Type</h3>
+          <div id="types">
+            <p>Fire</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
   <script src="main.js"></script>
 </body>
 </html>
