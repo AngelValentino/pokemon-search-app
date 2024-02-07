@@ -34,3 +34,15 @@ main {
   display: flex;
   align-items: center;
 }
+
+.hidden-ability {
+  background-color: rgb(250, 92, 92);
+  color: white;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.entry-versions span:hover {
+  cursor: pointer;
+  color: red;
+}
