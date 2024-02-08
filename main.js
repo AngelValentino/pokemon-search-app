@@ -2,35 +2,25 @@ const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
-// get gender, found in form and species. Needs if function depending on the pokemon, can be male, female, both or unspecified
-// if in forms has pokeName-female || pokeName-male make matched regex his gender
-// -1 unknown
-// 0 only male
-// 8 only female
-// rest means it can be female or male
-// there's weird ones that the gender is specified in the form category like Meowstic
-
-// pokemon category also needs to change, just like the entries they are also unordered, ex id: 899
-
-// improve entry return value instead of returning always an object, make it dynamic
+// do something if a rendered object property doesn't exist in the json file
+// return 'Entry has not been found'
 
 async function getPokemonData(srchVal) {
   const response = await fetch(url + srchVal);
 
   if (response.status !== 200) {
     alert("Pokémon not found");
-    throw new Error("Couldn't fetch the data");
+    throw new Error("Couldn't fetch the data.");
   } 
   
   const pokemonData = await response.json();
   const responseSpecies = await fetch(pokemonData.species.url);
 
   if (responseSpecies.status !== 200) {
-    throw new Error("Couldn't fetch the species data");
-  } 
+    throw new Error("Couldn't fetch the species data.");
+  }  
 
   const speciesData = await responseSpecies.json();
-  
   return {pokemonData, speciesData};
 }
 
@@ -55,19 +45,27 @@ function formatCategory(string) {
 }
 
 function formatEntryText(string) {
-  const regex = /\n|\f/g;
-  const regex2 = /([A-Z]{2,})/g;
-  const formatedString = string.replace(regex, ' ')
+  const regexSoftHypen = /\u00AD\n\f/g;
+  const regexNewline = /\n|\f/g;
+  const regexAllCapitalWord = /([A-Z]{2,})/g;
   
-  return formatedString.replace(regex2, (match) => {
-    if (string.startsWith(match)) {
-      const fullMatch = match;
-      return fullMatch[0] + fullMatch.slice(1).toLowerCase();
-    } 
-    else {
-      return match.toLowerCase();
-    }
-  });
+  const strRemoveSoftHypen = string.replace(regexSoftHypen, '');
+  const formatedString = strRemoveSoftHypen.replace(regexNewline, ' ')
+  
+  if (regexAllCapitalWord.test(string)) {
+    return formatedString.replace(regexAllCapitalWord, (match) => {
+      if (string.startsWith(match)) {
+        const allCapitalWord = match;
+        return allCapitalWord[0] + allCapitalWord.slice(1).toLowerCase();
+      } 
+      else {
+        return match.toLowerCase();
+      }
+    });
+  } 
+  else {
+    return formatedString;
+  }
 }
 
 function getFirstEnEntry(entriesArr) {
@@ -88,41 +86,69 @@ function getFirstEnEntry(entriesArr) {
 function getSecondEnEntry(entriesArr) {
   const entryObj = getFirstEnEntry(entriesArr);
   let secondEnEntry = '';
-  let matchIndex = 0;
 
   for (let i = entryObj.index + 1; i < entriesArr.length; i++) {
     if (entriesArr[i].language.name === 'en' && entriesArr[i].flavor_text !== entryObj.entry) {
       secondEnEntry = entriesArr[i].flavor_text;
-      matchIndex = i;
       break;
     }
   }
 
   if(!secondEnEntry) {
-    return {entry: 'No additional entry found.'};
+    return 'No additional entry has been found.';
   }
 
-  return {entry: secondEnEntry};
+  return secondEnEntry;
 }
 
 function changeEntry(entryLm, entriesArr, callback, entryClassToRemove, entryClassToAdd) {
   entryLm.classList.remove(entryClassToRemove);
   entryLm.classList.add(entryClassToAdd);
 
-  entryLm.innerText = `${formatEntryText(callback(entriesArr).entry)}`;
+  entryLm.innerText = callback(entriesArr).constructor === Object 
+    ? formatEntryText(callback(entriesArr).entry)
+    : formatEntryText(callback(entriesArr));
 }
 
-function generateEntryEvent(entryArr) {
+function generateEntryEvent(entriesArr) {
   const pokemonEntryLm = document.getElementById('pokemon-entry');
 
   document.getElementById('entry-versions').addEventListener('click', (e) => {
     if (e.target.matches('.entry-option-1') && pokemonEntryLm.classList.contains('entry-2')) {
-      changeEntry(pokemonEntryLm, entryArr, getFirstEnEntry, 'entry-2', 'entry-1');
+      changeEntry(pokemonEntryLm, entriesArr, getFirstEnEntry, 'entry-2', 'entry-1');
     } 
     else if (e.target.matches('.entry-option-2') && pokemonEntryLm.classList.contains('entry-1')) {
-      changeEntry(pokemonEntryLm, entryArr, getSecondEnEntry, 'entry-1', 'entry-2');
+      changeEntry(pokemonEntryLm, entriesArr, getSecondEnEntry, 'entry-1', 'entry-2');
     }
   });
+}
+
+function getPokeAvbleGendrs(data) {
+  const genderTypesLm = document.getElementById('gender-types');
+  const regexMale = /\bmale\b/;
+  const regexFemale = /\bfemale\b/;
+
+  if (data.pokemonData.forms.find((form) => regexMale.test(form.name))) {
+    genderTypesLm.innerHTML = 'M';
+    return;
+  } 
+  else if (data.pokemonData.forms.find((form) => regexFemale.test(form.name))) {
+    genderTypesLm.innerHTML = 'F';
+    return;
+  }
+
+  if (data.speciesData.gender_rate === 8) {
+    genderTypesLm.innerHTML = 'F';
+  } 
+  else if (data.speciesData.gender_rate === 0) {
+    genderTypesLm.innerHTML = 'M';
+  } 
+  else if (data.speciesData.gender_rate === -1) {
+    genderTypesLm.innerHTML = 'Unknown';
+  } 
+  else {
+    genderTypesLm.innerHTML = 'M F';
+  }
 }
 
 function generateHTML(data) {
@@ -174,11 +200,11 @@ function generateHTML(data) {
           <h4>Weight</h4>
           <p id="weight">${data.pokemonData.weight}</p>
           <h4>Gender</h4>
-          <p>M F</p>
+          <p id="gender-types">M F</p>
         </div>
         <div>
           <h4>Category</h4>
-          <p>${formatCategory(data.speciesData.genera[7].genus)}</p>
+          <p>${formatCategory(data.speciesData.genera.find((genus) => genus.language.name === 'en').genus)}</p>
           <h4>Ablility</h4>
           <p>${generateAbility(data.pokemonData.abilities)}</p>
         </div>
@@ -199,16 +225,15 @@ function displayPokemon() {
     .then((data) => {
       console.log(data);
       const entriesArr = data.speciesData.flavor_text_entries;
-      console.log(entriesArr)
+      console.log(entriesArr);
+      console.log(data.speciesData.gender_rate);
 
       generateHTML(data);
+      getPokeAvbleGendrs(data);
       generateEntryEvent(entriesArr);
     })
     .catch((err) => console.error(err));
 }
 
 
-
-
 searchBtnLm.addEventListener('click', displayPokemon);
-
