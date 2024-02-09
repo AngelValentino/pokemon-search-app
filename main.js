@@ -2,8 +2,11 @@ const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
-// do something if a rendered object property doesn't exist in the json file
-// return 'Entry has not been found'
+// validation input
+// type color class function
+// add pokeballs images for versions summary
+// add stats bar graph
+// ability function
 
 async function getPokemonData(srchVal) {
   const response = await fetch(url + srchVal);
@@ -44,7 +47,7 @@ function formatCategory(string) {
   return string.replace(regex, '');
 }
 
-function formatEntryText(string) {
+function formatSummary(string) {
   const regexSoftHypen = /\u00AD\n\f/g;
   const regexNewline = /\n|\f/g;
   const regexAllCapitalWord = /([A-Z]{2,})/g;
@@ -68,57 +71,57 @@ function formatEntryText(string) {
   }
 }
 
-function getFirstEnEntry(entriesArr) {
-  let firstEnEntry = '';
+function getFirstEnSummary(entriesArr) {
+  let firstEnSummary = '';
   let matchIndex = 0;
 
   for (let i = 0; i < entriesArr.length; i++) {
     if (entriesArr[i].language.name === 'en') {
-      firstEnEntry = entriesArr[i].flavor_text;
+      firstEnSummary = entriesArr[i].flavor_text;
       matchIndex = i;
       break;
     }
   }
 
-  return {entry: firstEnEntry, index: matchIndex};
+  return {summary: firstEnSummary, index: matchIndex};
 } 
 
-function getSecondEnEntry(entriesArr) {
-  const entryObj = getFirstEnEntry(entriesArr);
-  let secondEnEntry = '';
+function getSecondEnSummary(entriesArr) {
+  const summaryObj = getFirstEnSummary(entriesArr);
+  let secondEnSummary = '';
 
-  for (let i = entryObj.index + 1; i < entriesArr.length; i++) {
-    if (entriesArr[i].language.name === 'en' && entriesArr[i].flavor_text !== entryObj.entry) {
-      secondEnEntry = entriesArr[i].flavor_text;
+  for (let i = summaryObj.index + 1; i < entriesArr.length; i++) {
+    if (entriesArr[i].language.name === 'en' && entriesArr[i].flavor_text !== summaryObj.summary) {
+      secondEnSummary = entriesArr[i].flavor_text;
       break;
     }
   }
 
-  if(!secondEnEntry) {
+  if(!secondEnSummary) {
     return 'No additional entry has been found.';
   }
 
-  return secondEnEntry;
+  return secondEnSummary;
 }
 
-function changeEntry(entryLm, entriesArr, callback, entryClassToRemove, entryClassToAdd) {
-  entryLm.classList.remove(entryClassToRemove);
-  entryLm.classList.add(entryClassToAdd);
+function changeSummary(summaryLm, entriesArr, callback, classToRemove, classToAdd) {
+  summaryLm.classList.remove(classToRemove);
+  summaryLm.classList.add(classToAdd);
 
-  entryLm.innerText = callback(entriesArr).constructor === Object 
-    ? formatEntryText(callback(entriesArr).entry)
-    : formatEntryText(callback(entriesArr));
+  summaryLm.innerText = callback(entriesArr).constructor === Object 
+    ? formatSummary(callback(entriesArr).summary)
+    : formatSummary(callback(entriesArr));
 }
 
-function generateEntryEvent(entriesArr) {
-  const pokemonEntryLm = document.getElementById('pokemon-entry');
+function generatePokeSummaryEvent(entriesArr) {
+  const pokemonSummaryLm = document.getElementById('pokemon-summary');
 
-  document.getElementById('entry-versions').addEventListener('click', (e) => {
-    if (e.target.matches('.entry-option-1') && pokemonEntryLm.classList.contains('entry-2')) {
-      changeEntry(pokemonEntryLm, entriesArr, getFirstEnEntry, 'entry-2', 'entry-1');
+  document.getElementById('summary-versions').addEventListener('click', (e) => {
+    if (e.target.matches('.summary-option-1-btn') && pokemonSummaryLm.classList.contains('summary-2')) {
+      changeSummary(pokemonSummaryLm, entriesArr, getFirstEnSummary, 'summary-2', 'summary-1');
     } 
-    else if (e.target.matches('.entry-option-2') && pokemonEntryLm.classList.contains('entry-1')) {
-      changeEntry(pokemonEntryLm, entriesArr, getSecondEnEntry, 'entry-1', 'entry-2');
+    else if (e.target.matches('.summary-option-2-btn') && pokemonSummaryLm.classList.contains('summary-1')) {
+      changeSummary(pokemonSummaryLm, entriesArr, getSecondEnSummary, 'summary-1', 'summary-2');
     }
   });
 }
@@ -156,7 +159,7 @@ function generateHTML(data) {
 
   pokeContainerLm.innerHTML = `
   <div class="sprite-name">
-    <img id="sprite" src="${data.pokemonData.sprites.front_default}" alt="">
+    <img class="pokemon-sprite" id="sprite" src="${data.pokemonData.sprites.front_default}" alt="">
     <h2 id="pokemon-name">${data.pokemonData.name.toUpperCase()}&nbsp</h2>
     <h2 id="pokemon-id">#${data.pokemonData.id}</h2>
   </div>
@@ -165,52 +168,55 @@ function generateHTML(data) {
       <img src="${data.pokemonData.sprites.other['official-artwork'].front_default}" alt="">
       <div class="pokemon-stats">
         <div>
-          <h4>HP:</h4>
+          <h3>HP:</h3>
           <p id="hp">${data.pokemonData.stats[0].base_stat}</p>
         </div>
         <div>
-          <h4>Attack:</h4>
+          <h3>Attack:</h3>
           <p id="attack">${data.pokemonData.stats[1].base_stat}</p>
         </div>
         <div>
-          <h4>Deffense:</h4>
+          <h3>Deffense:</h3>
           <p id="defense">${data.pokemonData.stats[2].base_stat}</p>
         </div>
         <div>
-          <h4>Sp. Attack:</h4>
+          <h3>Sp. Attack:</h3>
           <p id="special-attack">${data.pokemonData.stats[3].base_stat}</p>
         </div>
         <div>
-          <h4>Sp. Defense</h4>
+          <h3>Sp. Defense</h3>
           <p id="special-defense">${data.pokemonData.stats[4].base_stat}</p>
         </div>
         <div>
-          <h4>Speed:</h4>
+          <h3>Speed:</h3>
           <p id="speed">${data.pokemonData.stats[5].base_stat}</p>
         </div>
       </div>
     </div>
     <div class="more-info">
-      <p class="entry-1" id="pokemon-entry">${formatEntryText(getFirstEnEntry(data.speciesData.flavor_text_entries).entry)}</p>
-      <p id="entry-versions" class="entry-versions">Versions: <span class="entry-option-1">1</span> <span class="entry-option-2">2</span></p>
+      <p class="summary-1" id="pokemon-summary">${formatSummary(getFirstEnSummary(data.speciesData.flavor_text_entries).summary)}</p>
+      <div id="summary-versions" class="summary-versions">
+        <button class="summary-option-1-btn">1</button> 
+        <button class="summary-option-2-btn">2</button>
+      </div>
       <div class="pokemon-details">
         <div>
-          <h4>Height</h4>
+          <h3>Height</h3>
           <p id="height">${data.pokemonData.height}</p>
-          <h4>Weight</h4>
+          <h3>Weight</h3>
           <p id="weight">${data.pokemonData.weight}</p>
-          <h4>Gender</h4>
+          <h3>Gender</h3>
           <p id="gender-types">M F</p>
         </div>
         <div>
-          <h4>Category</h4>
+          <h3>Category</h3>
           <p>${formatCategory(data.speciesData.genera.find((genus) => genus.language.name === 'en').genus)}</p>
-          <h4>Ablility</h4>
+          <h3>Ablility</h3>
           <p>${generateAbility(data.pokemonData.abilities)}</p>
         </div>
       </div>
       <h3>Type</h3>
-      <div id="types">
+      <div class="types-container" id="types">
         ${generateType(data.pokemonData.types.map((obj) => obj.type.name))}
       </div>
     </div>
@@ -230,7 +236,7 @@ function displayPokemon() {
 
       generateHTML(data);
       getPokeAvbleGendrs(data);
-      generateEntryEvent(entriesArr);
+      generatePokeSummaryEvent(entriesArr);
     })
     .catch((err) => console.error(err));
 }

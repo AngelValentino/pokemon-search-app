@@ -10,16 +10,20 @@
   <main>
     <div class="search-pokemon-container">
       <div class="search-pokemon">
-        <input required type="text" name="search-pokemon" id="search-input">
-        <button id="search-button">Search</button>
+        <label for="search-input">Name or ID</label>
+        <div class="search-input">
+          <input required type="text" name="search-pokemon" id="search-input">
+          <button id="search-button">Search</button>
+        </div>
+        <p>E.g. Charizard or #6, Typhlosion or #157</p>
       </div>
-      <div class="pokemon-hints">
-        <p></p>
+      <div class="search-hint">
+        <p>Search a Pokémon by his name or using the national Pokédex number.</p>
       </div>
     </div>
     <div id="pokemon-container" class="pokemon-container">
       <div class="sprite-name">
-        <img class="sprite" src="images/pokemon2.jpg" alt="">
+        <img class="pokemon-sprite" src="images/pokemon2.jpg" alt="">
         <h2 id="pokemon-name">Charmander&nbsp</h2>
         <h2 id="pokemon-id">#4</h2>
       </div>
@@ -28,53 +32,58 @@
           <img src="images/pokemon2.jpg" alt="">
           <div class="pokemon-stats">
             <div>
-              <h4>HP:</h4>
+              <h3>HP:</h3>
               <p id="hp">35</p>
             </div>
             <div>
-              <h4>Attack:</h4>
+              <h3>Attack:</h3>
               <p id="attack">55</p>
             </div>
             <div>
-              <h4>Deffense:</h4>
+              <h3>Deffense:</h3>
               <p id="defense">40</p>
             </div>
             <div>
-              <h4>Sp. Attack:</h4>
+              <h3>Sp. Attack:</h3>
               <p id="special-attack">50</p>
             </div>
             <div>
-              <h4>Sp. Defense</h4>
+              <h3>Sp. Defense</h3>
               <p id="special-defense">50</p>
             </div>
             <div>
-              <h4>Speed:</h4>
+              <h3>Speed:</h3>
               <p id="speed">90</p>
             </div>
           </div>
         </div>
         <div class="more-info">
-          <p>La llama de su cola indica su fuerza vital. Si está débil, la llama arderá más tenue.</p>
-          <p>Versions: <span>1</span> <span>2</span></p>
+          <p class="summary-1" id="pokemon-summary">La llama de su cola indica su fuerza vital. Si está débil, la llama arderá más tenue.</p>
+          <div id="summary-versions" class="summary-versions">
+            <button class="summary-option-1-btn">1</button> 
+            <button class="summary-option-2-btn">2</button>
+          </div>
           <div class="pokemon-details">
             <div>
-              <h4>Height</h4>
+              <h3>Height</h3>
               <p id="height">0.6m</p>
-              <h4>Weight</h4>
+              <h3>Weight</h3>
               <p id="weight">8.5 kg</p>
-              <h4>Gender</h4>
+              <h3>Gender</h3>
               <p>M F</p>
             </div>
             <div>
-              <h4>Category</h4>
+              <h3>Category</h3>
               <p>Lizard</p>
-              <h4>Ablility</h4>
+              <h3>Ablility</h3>
               <p>Mar llamas</p>
             </div>
           </div>
           <h3>Type</h3>
-          <div id="types">
-            <p>Fire</p>
+          <div class="types-container" id="types">
+            <p>FIRE</p>
+            <p>FLYING</p>
+            <p>ELECTRIC</p>
           </div>
         </div>
       </div>
