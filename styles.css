@@ -164,23 +164,121 @@ main {
   margin: 0 0 20px;
 }
 
-.types-container p {
-  padding: 8px;
-  border-radius: 5px;
-  text-align: center;
-  background-color: #efefef;
-}
-
 .types-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 7px;
 }
 
+.types-container img {
+  width: 35px;
+}
 
 
+.types-container > div {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  padding: 5px 12px 5px 5px;
+  border-radius: 30px;
+  width: 100%;
+}
 
 
+/* TYPES */
+/* STELLAR AND ??? ARE MISSING*/
+
+.normal-type {
+  background-color: #9099a1;
+}
+
+.fire-type {
+  background-color: #ff9c54;
+}
+
+.fighting-type {
+  background-color: #ce4069;
+  color: #fff;
+}
+
+.water-type {
+  background-color: #4d90d5;
+  color: #fff;
+}
+
+.flying-type {
+  background-color: #8fa8dd;
+}
+
+.grass-type {
+  background-color: #63bb5b;
+}
+
+.poison-type {
+  background-color: #ab6ac8;
+}
+
+.electric-type {
+  background-color: #f3d23b;
+}
+
+.ground-type {
+  background-color: #d97746;
+}
+
+.psychic-type {
+  background-color: #f97176;
+  color: #fff;
+}
+
+.rock-type {
+  background-color: #c7b78b;
+}
+
+.ice-type {
+  background-color: #74cec0;
+}
+
+.bug-type {
+  background-color: #90c12c;
+}
+
+.dragon-type {
+  background-color: #0a6dc4;
+  color: #fff;
+}
+
+.ghost-type {
+  background-color: #5269ac;
+  color: #fff;
+}
+
+.dark-type {
+  background-color: #5a5366;
+  color: #fff;
+}
+
+.steel-type {
+  background-color: #5a8ea1;
+}
+
+.fairy-type {
+  background-color: #ec8fe6;
+}
+
+/* LOADING ICON */
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+#loading-text img {
+  width: 30px;
+}
 
 
 

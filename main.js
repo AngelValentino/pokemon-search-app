@@ -2,17 +2,31 @@ const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
-// validation input
-// type color class function
-// add pokeballs images for versions summary
+// add pokeball images for versions summary
 // add stats bar graph
-// ability function
+// ability fetch and generate summary function
+// add media queries
+// improve loading icon
+// add metric values function
+
+function showLoading() {
+  const loadingTextLm = document.getElementById('loading-text');
+  loadingTextLm.classList.add('show');
+}
+
+function hideLoading() {
+  const loadingTextLm = document.getElementById('loading-text');
+  loadingTextLm.classList.remove('show');
+}
 
 async function getPokemonData(srchVal) {
+  showLoading()
   const response = await fetch(url + srchVal);
+  console.log(response, response.status)
 
   if (response.status !== 200) {
     alert("Pokémon not found");
+    hideLoading();
     throw new Error("Couldn't fetch the data.");
   } 
   
@@ -20,11 +34,23 @@ async function getPokemonData(srchVal) {
   const responseSpecies = await fetch(pokemonData.species.url);
 
   if (responseSpecies.status !== 200) {
+    hideLoading();
     throw new Error("Couldn't fetch the species data.");
   }  
 
   const speciesData = await responseSpecies.json();
   return {pokemonData, speciesData};
+}
+
+function validateInput(input) {
+  const regex = /[^a-z\d]+|^$/;
+  console.log(input)
+
+  if (regex.test(input)) {
+    alert('Input not valid');
+    return 1
+  }
+  return 0;
 }
 
 function generateAbility(arr) {
@@ -36,10 +62,6 @@ function generateAbility(arr) {
       return `<p class="hidden-ability">${ability.ability.name}???</p>`;
     }
   }).join('');
-}
-
-function generateType(arr) {
-  return arr.map((type) => `<p>${type.toUpperCase()}</p>`).join('');
 }
 
 function formatCategory(string) {
@@ -154,6 +176,16 @@ function getPokeAvbleGendrs(data) {
   }
 }
 
+function generateType(typeArr) {
+  return typeArr.map((type) => `
+  <div class="${type}-type">
+    <img src="images/types/${type}-icon.png">
+    <p>${type.toUpperCase()}</p>
+  </div>
+  `).join('');
+}
+
+
 function generateHTML(data) {
   const pokeContainerLm = document.getElementById('pokemon-container');
 
@@ -225,20 +257,30 @@ function generateHTML(data) {
 }
 
 function displayPokemon() {
-  const searchVal = inputLm.value.toLowerCase();
+  const searchVal = inputLm.value.trim().toLowerCase();
+  console.log(searchVal);
+
+  if (validateInput(searchVal)) {
+    return;
+  }
   
   getPokemonData(searchVal)
     .then((data) => {
+      hideLoading();
       console.log(data);
       const entriesArr = data.speciesData.flavor_text_entries;
       console.log(entriesArr);
       console.log(data.speciesData.gender_rate);
+      console.log(data.pokemonData.types.map((obj) => obj.type.name))
 
       generateHTML(data);
       getPokeAvbleGendrs(data);
       generatePokeSummaryEvent(entriesArr);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      hideLoading();
+      console.error(err)
+    });
 }
 
 
