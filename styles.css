@@ -2,7 +2,7 @@ body {
   font-family: sans-serif;
 }
 
-body, h1, h2, h3, h4, p {
+body, h1, h2, h3, h4, p, button {
   margin: 0;
   padding: 0;
 }
@@ -132,13 +132,74 @@ main {
 
   /* MORE INFO */
 
-.summary-1 {
+.summary-1, .summary-2 {
   margin: 10px 0 20px;
 }
 
 .summary-versions {
+  display: flex;
+  align-items: center;
   margin: 0 0 35px;
 }
+
+.summary-versions p {
+  margin: 0 5px 0 0;
+}
+
+.summary-versions img {
+  width: 35px;
+}
+
+.summary-versions button {
+  background-color: transparent;
+  border: none;
+  margin: 0 5px;
+}
+
+    /* POKEBALLS */
+
+.summary-option-1-btn {
+  position: relative;
+}
+
+.pokeball {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+}
+
+.summary-option-2-btn {
+  position: relative;
+}
+
+.superball {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+}
+
+.pokeball:hover, .superball:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.active-pokeball {
+  opacity: 1;
+}
+
+.hidden-pokeball-bw {
+  opacity: 0;
+}
+
+.pokeball-bw:has(~ .pokeball:hover) {
+  opacity: 0;
+}
+
+.superball-bw:has(~ .superball:hover) {
+  opacity: 0;
+} 
+
+    /* POKEMON DETAILS */
 
 .pokemon-details {
   display: grid;
@@ -173,7 +234,6 @@ main {
 .types-container img {
   width: 35px;
 }
-
 
 .types-container > div {
   display: grid;
@@ -279,13 +339,3 @@ main {
 #loading-text img {
   width: 30px;
 }
-
-
-
-
-.summary-versions button:hover {
-  cursor: pointer;
-  background-color: red;
-  color: white;
-}
-

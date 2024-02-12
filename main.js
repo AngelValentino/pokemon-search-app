@@ -43,12 +43,16 @@ async function getPokemonData(srchVal) {
 }
 
 function validateInput(input) {
-  const regex = /[^a-z\d]+|^$/;
+  const regex = /^[a-z\d]+(?:-[a-z]+)?$/;
   console.log(input)
 
-  if (regex.test(input)) {
-    alert('Input not valid');
-    return 1
+  if (input === '') {
+    alert('Please insert a value.');
+    return 1;
+  } 
+  else if (!regex.test(input)) {
+    alert(`${input} is not a pokemon.`);
+    return 2;
   }
   return 0;
 }
@@ -126,24 +130,49 @@ function getSecondEnSummary(entriesArr) {
   return secondEnSummary;
 }
 
-function changeSummary(summaryLm, entriesArr, callback, classToRemove, classToAdd) {
-  summaryLm.classList.remove(classToRemove);
-  summaryLm.classList.add(classToAdd);
+function changeSummary(summaryLm, entriesArr, callback, classToAdd) {
+  summaryLm.className = classToAdd;
 
   summaryLm.innerText = callback(entriesArr).constructor === Object 
     ? formatSummary(callback(entriesArr).summary)
     : formatSummary(callback(entriesArr));
 }
 
+function displayActivePokeball(e, activePokeball, hiddenPokeball) {
+  if (!e.target.matches('.active-pokeball')) {
+    activePokeball.classList.remove('active-pokeball');
+    e.target.classList.add('active-pokeball');
+    const currPokeballBw = document.getElementById(`${e.target.id}-bw`);
+
+    if (!currPokeballBw.matches('.hidden-pokeball-bw')) {
+      hiddenPokeball.classList.remove('hidden-pokeball-bw');
+      currPokeballBw.classList.add('hidden-pokeball-bw');
+    }
+  }
+}
+
 function generatePokeSummaryEvent(entriesArr) {
   const pokemonSummaryLm = document.getElementById('pokemon-summary');
+  const allPokeballImgLm = document.querySelectorAll('.summary-versions img');
+  const pokeballLm = document.getElementById('pokeball');
+  const pokeballBwLm = document.getElementById('pokeball-bw');
+
+  if (pokemonSummaryLm.matches('.summary-1')) {
+    pokeballLm.classList.add('active-pokeball');
+    pokeballBwLm.classList.add('hidden-pokeball-bw');
+  }
 
   document.getElementById('summary-versions').addEventListener('click', (e) => {
-    if (e.target.matches('.summary-option-1-btn') && pokemonSummaryLm.classList.contains('summary-2')) {
-      changeSummary(pokemonSummaryLm, entriesArr, getFirstEnSummary, 'summary-2', 'summary-1');
+    const activePokeball = [...allPokeballImgLm].find((element) => element.matches('.active-pokeball'));
+    const hiddenPokeball = [...allPokeballImgLm].find((element) => element.matches('.hidden-pokeball-bw'));
+
+    if (e.target.parentElement.matches('.summary-option-1-btn') && pokemonSummaryLm.classList.contains('summary-2')) {
+      changeSummary(pokemonSummaryLm, entriesArr, getFirstEnSummary, 'summary-1');
+      displayActivePokeball(e, activePokeball, hiddenPokeball);
     } 
-    else if (e.target.matches('.summary-option-2-btn') && pokemonSummaryLm.classList.contains('summary-1')) {
-      changeSummary(pokemonSummaryLm, entriesArr, getSecondEnSummary, 'summary-1', 'summary-2');
+    else if (e.target.parentElement.matches('.summary-option-2-btn') && pokemonSummaryLm.classList.contains('summary-1')) {
+      changeSummary(pokemonSummaryLm, entriesArr, getSecondEnSummary, 'summary-2');
+      displayActivePokeball(e, activePokeball, hiddenPokeball);
     }
   });
 }
@@ -184,7 +213,6 @@ function generateType(typeArr) {
   </div>
   `).join('');
 }
-
 
 function generateHTML(data) {
   const pokeContainerLm = document.getElementById('pokemon-container');
@@ -227,10 +255,17 @@ function generateHTML(data) {
     </div>
     <div class="more-info">
       <p class="summary-1" id="pokemon-summary">${formatSummary(getFirstEnSummary(data.speciesData.flavor_text_entries).summary)}</p>
-      <div id="summary-versions" class="summary-versions">
-        <button class="summary-option-1-btn">1</button> 
-        <button class="summary-option-2-btn">2</button>
-      </div>
+        <div id="summary-versions" class="summary-versions">
+          <p>Versions: </p>
+          <button class="summary-option-1-btn">
+            <img class="pokeball-bw" id="pokeball-bw" src="images/pokeballs/pokeBall-bw.png" alt="">
+            <img class="pokeball" id="pokeball" src="images/pokeballs/pokeBall.png" alt="">
+          </button>  
+          <button class="summary-option-2-btn">
+            <img class="superball-bw" id="superball-bw" src="images/pokeballs/superBall-bw.png" alt="">
+            <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="">
+          </button>
+        </div>
       <div class="pokemon-details">
         <div>
           <h3>Height</h3>
