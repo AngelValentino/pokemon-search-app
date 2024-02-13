@@ -51,13 +51,17 @@ main {
   margin: 0 0 10px;
 }
 
+.search-pokemon {
+  flex: 1;
+}
+
+.search-hint{
+  flex: 1;
+}
+
 .search-input {
   display: flex;
   gap: 20px;
-}
-
-.search-input > input::placeholder {
-  opacity: 0.75;
 }
 
 .search-input > input {
@@ -65,16 +69,28 @@ main {
   padding: 7.5px 7.5px 9px 7.5px;
   border-radius: 5px;
   border: 3px solid #616161;
+  width: 100%;
 }
 
 .search-input > button {
   background-color: #ee6b2f;
   border: none;
   color: white;
-  padding: 8px;
+  padding: 8px 20px;
   border-radius: 5px;
   transition: background-color 0.15s;
 }
+
+.search-icon {
+  display: block;
+  font-size: 1.5em;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 550,
+  'GRAD' 0,
+  'opsz' 24
+}
+
 
 .search-input > button:hover {
   cursor: pointer;
@@ -109,7 +125,7 @@ main {
 .pokemon-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 17px;
   padding: 12px;
 }
 
@@ -118,7 +134,7 @@ main {
   background-color: #efefef;
   display: block;
   border-radius: 5px;
-  margin: 0 0 12px;
+  margin: 0 0 17px;
 }
 
 .pokemon-stats {
@@ -221,7 +237,7 @@ main {
   display: none;
 }
 
- .pokemon-ability-info > p:first-child {
+.pokemon-ability-info > p:first-child {
   margin: 15px 15px 0 25px;
   color: #616161;
 } 
@@ -266,8 +282,12 @@ main {
   font-size: 1em;
 }
 
-.first-info-section > p, .second-info-section > p {
+.first-info-section > p, .second-info-section > p, .gender-types {
   margin: 10px 0 15px;
+}
+
+.gender-types span {
+  font-size: 1.5em;
 }
 
 .more-info > h3 {
@@ -412,4 +432,43 @@ main {
 
 .show {
   display: initial;
+}
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 875px) {
+  .pokemon-info {
+    grid-template-columns: 1fr;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  .search-pokemon-container {
+    border-radius: 5px;
+    display: flex;
+    flex-flow: column;
+    gap: 45px;
+    align-items: stretch;
+    max-width: 650px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .search-pokemon-container {
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    background-color: #313131;
+    padding: 30px 40px;
+    align-items: start;
+    gap: 50px;
+  }
+  .search-input {
+    flex-flow: column;
+    gap: 20px;
+  }
+
+  .search-icon {
+    text-align: center;
+  }
 }

@@ -3,8 +3,6 @@ const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
 // add stats bar graph
-// add gender icons
-// add media queries
 // improve loading icon
 // add metric values function
 
@@ -120,11 +118,7 @@ function generateAbility(arr) {
   }).join('');
 }
 
-function generateHiddenTag(e) {
-  return e.target.matches('.hidden-ability-icon')
-    ? ` (hidden)`
-    : '';
-}
+const generateHiddenTag = (e) => e.target.matches('.hidden-ability-icon') ? ' (hidden)' : '';
 
 function generateAbilityEvent() {
   const abilitesContainerLm = document.getElementById('abilities-container');
@@ -242,30 +236,30 @@ function generatePokeSummaryEvent(entriesArr) {
 }
 
 function getPokeAvbleGendrs(data) {
-  const genderTypesLm = document.getElementById('gender-types');
   const regexMale = /\bmale\b/;
   const regexFemale = /\bfemale\b/;
 
   if (data.pokemonData.forms.find((form) => regexMale.test(form.name))) {
-    genderTypesLm.innerHTML = 'M';
-    return;
+    return '<span class="material-symbols-outlined">male</span>';
   } 
   else if (data.pokemonData.forms.find((form) => regexFemale.test(form.name))) {
-    genderTypesLm.innerHTML = 'F';
-    return;
+    return '<span class="material-symbols-outlined">female</span>';
   }
 
   if (data.speciesData.gender_rate === 8) {
-    genderTypesLm.innerHTML = 'F';
+    return '<span class="material-symbols-outlined">female</span>';
   } 
   else if (data.speciesData.gender_rate === 0) {
-    genderTypesLm.innerHTML = 'M';
+    return '<span class="material-symbols-outlined">male</span>';
   } 
   else if (data.speciesData.gender_rate === -1) {
-    genderTypesLm.innerHTML = 'Unknown';
+    return 'Unknown';
   } 
   else {
-    genderTypesLm.innerHTML = 'M F';
+    return `
+      <span class="material-symbols-outlined">male</span>
+      <span class="material-symbols-outlined">female</span>
+    `
   }
 }
 
@@ -346,7 +340,9 @@ function generateHTML(data) {
             <h3>Weight</h3>
             <p id="weight">${data.pokemonData.weight}</p>
             <h3>Gender</h3>
-            <p id="gender-types">M F</p>
+            <div class="gender-types">
+              ${getPokeAvbleGendrs(data)}
+            </div>
           </div>
           <div class="second-info-section">
             <h3>Category</h3>
@@ -381,7 +377,6 @@ function displayPokemon() {
       const entriesArr = data.speciesData.flavor_text_entries;
 
       generateHTML(data);
-      getPokeAvbleGendrs(data);
       generatePokeSummaryEvent(entriesArr);
       generateAbilityEvent();
     })
