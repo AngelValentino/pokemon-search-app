@@ -2,9 +2,13 @@ body {
   font-family: sans-serif;
 }
 
-body, h1, h2, h3, h4, p, button {
+body, h1, h2, h3, h4, p {
   margin: 0;
   padding: 0;
+}
+
+button {
+  all: unset;
 }
 
 * {
@@ -142,6 +146,10 @@ main {
   margin: 0 0 35px;
 }
 
+.summary-versions button {
+  display: flex;
+}
+
 .summary-versions p {
   margin: 0 5px 0 0;
 }
@@ -151,8 +159,6 @@ main {
 }
 
 .summary-versions button {
-  background-color: transparent;
-  border: none;
   margin: 0 5px;
 }
 
@@ -201,13 +207,57 @@ main {
 
     /* POKEMON DETAILS */
 
+.pokemon-details-container {
+  position: relative;
+}
+
+.pokemon-ability-info {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #313131;
+  color: white;
+  display: none;
+}
+
+ .pokemon-ability-info > p:first-child {
+  margin: 15px 15px 0 25px;
+  color: #616161;
+} 
+
+.ability-close-icon-btn {
+  font-size: 1.25em;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.ability-close-icon {
+  padding: 5px;
+}
+
+.ability-name {
+  margin: 15px 0 0 25px;
+}
+
+.ability-summary {
+  margin: 15px 15px 0 25px;
+  color: #F2F2F2;
+}
+
+.ability-close-icon:hover {
+  font-variation-settings:
+  'FILL' 1;
+  cursor: pointer;
+}
+
 .pokemon-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 20px 20px 5px 20px;
   background-color: #30a7d7;
   border-radius: 10px;
-  margin: 0 0 35px;
 }
 
 .pokemon-details h3 {
@@ -216,13 +266,35 @@ main {
   font-size: 1em;
 }
 
-.pokemon-details p {
+.first-info-section > p, .second-info-section > p {
   margin: 10px 0 15px;
 }
 
 .more-info > h3 {
   font-size: 1em;
-  margin: 0 0 20px;
+  margin: 35px 0 20px;
+}
+
+.abilities-container {
+  margin: 10px 0 15px;
+}
+
+.abilities-container > div {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.ability-info-icon, .hidden-ability-icon {
+  color: #fff;
+}
+
+.ability-info-icon:hover, .hidden-ability-icon:hover {
+  font-variation-settings:
+  'FILL' 1;
+  cursor: pointer;
 }
 
 .types-container {
@@ -328,14 +400,16 @@ main {
 
 /* LOADING ICON */
 
+
+
+#loading-text img {
+  width: 30px;
+}
+
 .hide {
   display: none;
 }
 
 .show {
-  display: block;
-}
-
-#loading-text img {
-  width: 30px;
+  display: initial;
 }

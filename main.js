@@ -2,9 +2,8 @@ const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
-// add pokeball images for versions summary
 // add stats bar graph
-// ability fetch and generate summary function
+// add gender icons
 // add media queries
 // improve loading icon
 // add metric values function
@@ -22,7 +21,6 @@ function hideLoading() {
 async function getPokemonData(srchVal) {
   showLoading()
   const response = await fetch(url + srchVal);
-  console.log(response, response.status)
 
   if (response.status !== 200) {
     alert("Pokémon not found");
@@ -42,9 +40,24 @@ async function getPokemonData(srchVal) {
   return {pokemonData, speciesData};
 }
 
+async function getPokemonAbilityData(abilityName) {
+  showLoading()
+  const abilityUrl = 'https://pokeapi.co/api/v2/ability/';
+
+  const response = await fetch(abilityUrl + abilityName);
+  
+  if (response.status !== 200) {
+    alert("Ability info not found");
+    hideLoading();
+    throw new Error("Couldn't fetch the data.");
+  } 
+
+  const abilityData = await response.json();
+  return abilityData;
+}
+
 function validateInput(input) {
   const regex = /^[a-z\d]+(?:-[a-z]+)?$/;
-  console.log(input)
 
   if (input === '') {
     alert('Please insert a value.');
@@ -55,17 +68,6 @@ function validateInput(input) {
     return 2;
   }
   return 0;
-}
-
-function generateAbility(arr) {
-  return arr.map((ability) => {
-    if (ability['is_hidden'] === false) {
-      return `<p>${ability.ability.name}</p>`;
-    } 
-    else if (ability['is_hidden'] === true) {
-      return `<p class="hidden-ability">${ability.ability.name}???</p>`;
-    }
-  }).join('');
 }
 
 function formatCategory(string) {
@@ -97,6 +99,68 @@ function formatSummary(string) {
   }
 }
 
+function generateAbility(arr) {
+  return arr.map((ability) => {
+    if (!ability.is_hidden) {
+      return `
+        <div>
+          <p>${ability.ability.name}</p>
+          <span id="${ability.ability.name}" class="material-symbols-outlined ability-info-icon">help</span>
+        </div>
+      `;
+    } 
+    else {
+      return `
+        <div>
+          <p class="hidden-ability">${ability.ability.name}</p>
+          <span class="material-symbols-outlined hidden-ability-icon" id="${ability.ability.name}" class="material-symbols-outlined ability-info-icon">help</span>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+function generateHiddenTag(e) {
+  return e.target.matches('.hidden-ability-icon')
+    ? ` (hidden)`
+    : '';
+}
+
+function generateAbilityEvent() {
+  const abilitesContainerLm = document.getElementById('abilities-container');
+  const infoContainerLm = document.getElementById('pokemon-ability-info');
+
+  abilitesContainerLm.addEventListener('click', (e) => {
+    if (e.target.matches('span')) {
+      const abilityName = e.target.id;
+
+      getPokemonAbilityData(abilityName)
+      .then((abilitydata) => {
+        hideLoading();
+        infoContainerLm.classList.add('show');
+
+        infoContainerLm.innerHTML = `
+          <p>Ability information</p>
+          <button class="ability-close-icon-btn">
+            <span id="ability-close-icon" class="material-symbols-outlined ability-close-icon">cancel</span>
+          </button>
+          <h3 class="ability-name">${abilitydata.names.find((obj) => obj.language.name === 'en').name}${generateHiddenTag(e)}</h3>
+          <p class="ability-summary">${formatSummary(abilitydata.flavor_text_entries.find((entry) => entry.language.name === 'en').flavor_text)}</p>
+        `;
+
+        const closeIconLm = document.getElementById('ability-close-icon');
+        closeIconLm.addEventListener('click', () => {
+          infoContainerLm.classList.remove('show');
+        });
+      })
+      .catch((err) => {
+        hideLoading();
+        console.error(err);
+      });
+    }
+  });
+}
+
 function getFirstEnSummary(entriesArr) {
   let firstEnSummary = '';
   let matchIndex = 0;
@@ -123,7 +187,7 @@ function getSecondEnSummary(entriesArr) {
     }
   }
 
-  if(!secondEnSummary) {
+  if (!secondEnSummary) {
     return 'No additional entry has been found.';
   }
 
@@ -244,7 +308,7 @@ function generateHTML(data) {
           <p id="special-attack">${data.pokemonData.stats[3].base_stat}</p>
         </div>
         <div>
-          <h3>Sp. Defense</h3>
+          <h3>Sp. Defense:</h3>
           <p id="special-defense">${data.pokemonData.stats[4].base_stat}</p>
         </div>
         <div>
@@ -255,31 +319,43 @@ function generateHTML(data) {
     </div>
     <div class="more-info">
       <p class="summary-1" id="pokemon-summary">${formatSummary(getFirstEnSummary(data.speciesData.flavor_text_entries).summary)}</p>
-        <div id="summary-versions" class="summary-versions">
-          <p>Versions: </p>
-          <button class="summary-option-1-btn">
-            <img class="pokeball-bw" id="pokeball-bw" src="images/pokeballs/pokeBall-bw.png" alt="">
-            <img class="pokeball" id="pokeball" src="images/pokeballs/pokeBall.png" alt="">
-          </button>  
-          <button class="summary-option-2-btn">
-            <img class="superball-bw" id="superball-bw" src="images/pokeballs/superBall-bw.png" alt="">
-            <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="">
+      <div id="summary-versions" class="summary-versions">
+        <p>Versions: </p>
+        <button class="summary-option-1-btn">
+          <img class="pokeball-bw" id="pokeball-bw" src="images/pokeballs/pokeBall-bw.png" alt="">
+          <img class="pokeball" id="pokeball" src="images/pokeballs/pokeBall.png" alt="">
+        </button>  
+        <button class="summary-option-2-btn">
+          <img class="superball-bw" id="superball-bw" src="images/pokeballs/superBall-bw.png" alt="">
+          <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="">
+        </button>
+      </div>
+      <div class="pokemon-details-container">
+        <div id="pokemon-ability-info" class="pokemon-ability-info">
+          <p>Ability information</p>
+          <button class="ability-close-icon-btn">
+            <span id="ability-close-icon" class="material-symbols-outlined ability-close-icon">cancel</span>
           </button>
+          <h3 class="ability-name">Mar Llamas</h3>
+          <p class="ability-summary">Potencia sus movimientos de tipo Fuego cuando le quedan pocos PS.</p>
         </div>
-      <div class="pokemon-details">
-        <div>
-          <h3>Height</h3>
-          <p id="height">${data.pokemonData.height}</p>
-          <h3>Weight</h3>
-          <p id="weight">${data.pokemonData.weight}</p>
-          <h3>Gender</h3>
-          <p id="gender-types">M F</p>
-        </div>
-        <div>
-          <h3>Category</h3>
-          <p>${formatCategory(data.speciesData.genera.find((genus) => genus.language.name === 'en').genus)}</p>
-          <h3>Ablility</h3>
-          <p>${generateAbility(data.pokemonData.abilities)}</p>
+        <div class="pokemon-details">
+          <div class="first-info-section">
+            <h3>Height</h3>
+            <p id="height">${data.pokemonData.height}</p>
+            <h3>Weight</h3>
+            <p id="weight">${data.pokemonData.weight}</p>
+            <h3>Gender</h3>
+            <p id="gender-types">M F</p>
+          </div>
+          <div class="second-info-section">
+            <h3>Category</h3>
+            <p>${formatCategory(data.speciesData.genera.find((genus) => genus.language.name === 'en').genus)}</p>
+            <h3>Ablility</h3>
+            <div id="abilities-container" class="abilities-container">
+              ${generateAbility(data.pokemonData.abilities)}
+            </div>
+          </div>
         </div>
       </div>
       <h3>Type</h3>
@@ -293,7 +369,6 @@ function generateHTML(data) {
 
 function displayPokemon() {
   const searchVal = inputLm.value.trim().toLowerCase();
-  console.log(searchVal);
 
   if (validateInput(searchVal)) {
     return;
@@ -304,13 +379,11 @@ function displayPokemon() {
       hideLoading();
       console.log(data);
       const entriesArr = data.speciesData.flavor_text_entries;
-      console.log(entriesArr);
-      console.log(data.speciesData.gender_rate);
-      console.log(data.pokemonData.types.map((obj) => obj.type.name))
 
       generateHTML(data);
       getPokeAvbleGendrs(data);
       generatePokeSummaryEvent(entriesArr);
+      generateAbilityEvent();
     })
     .catch((err) => {
       hideLoading();
