@@ -2,8 +2,7 @@ const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
 
-// add stats bar graph
-// improve loading icon
+// improve loading icon and add skeleton
 // add metric values function
 
 function showLoading() {
@@ -95,6 +94,79 @@ function formatSummary(string) {
   else {
     return formatedString;
   }
+}
+
+const getStatPct = (number) => (number * 100 / 255).toFixed(2);
+
+function generateStats(arr) {
+  const stats = {};
+
+  arr.forEach((statObj) => {
+    stats[statObj.stat.name] = statObj.base_stat;
+  });
+
+  return `
+    <div>
+      <div>
+        <img src="images/stat-icons/hp.png" alt="hp icon">
+        <p id="hp">${stats.hp}</p>
+      </div>
+      <div>
+        <div class="hp-bar" style="width: ${getStatPct(stats.hp)}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <img src="images/stat-icons/attack.png" alt="attack icon">
+        <p id="attack">${stats.attack}</p>
+      </div>
+      <div>
+        <div class="attack-bar" style="width: ${getStatPct(stats.attack)}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <img src="images/stat-icons/defense.png" alt="defense icon">
+        <p id="defense">${stats.defense}</p>
+      </div>
+      <div>
+        <div class="defense-bar" style="width: ${getStatPct(stats.defense)}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <img src="images/stat-icons/sp-atk.png" alt="special attack icon">
+        <p id="special-attack">${stats['special-attack']}</p>
+      </div>
+      <div>
+        <div class="sp-atk-bar" style="width: ${getStatPct(stats['special-attack'])}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <img src="images/stat-icons/sp-def.png" alt="special defense icon">
+        <p id="special-defense">${stats['special-defense']}</p>
+      </div>
+      <div>
+        <div class="sp-def-bar" style="width: ${getStatPct(stats['special-defense'])}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <img src="images/stat-icons/speed.png" alt="speed icon">
+        <p id="speed">${stats.speed}</p>
+      </div>
+      <div>
+        <div class="speed-bar" style="width: ${getStatPct(stats.speed)}%"></div>
+        <div class="bar-bg"></div>
+      </div>
+    </div>
+  `;
 }
 
 function generateAbility(arr) {
@@ -266,7 +338,7 @@ function getPokeAvbleGendrs(data) {
 function generateType(typeArr) {
   return typeArr.map((type) => `
   <div class="${type}-type">
-    <img src="images/types/${type}-icon.png">
+    <img src="images/types/${type}-icon.png" alt="${type} type icon">
     <p>${type.toUpperCase()}</p>
   </div>
   `).join('');
@@ -277,38 +349,15 @@ function generateHTML(data) {
 
   pokeContainerLm.innerHTML = `
   <div class="sprite-name">
-    <img class="pokemon-sprite" id="sprite" src="${data.pokemonData.sprites.front_default}" alt="">
+    <img class="pokemon-sprite" id="sprite" src="${data.pokemonData.sprites.front_default}" alt="${data.pokemonData.name} sprite">
     <h2 id="pokemon-name">${data.pokemonData.name.toUpperCase()}&nbsp</h2>
     <h2 id="pokemon-id">#${data.pokemonData.id}</h2>
   </div>
   <div class="pokemon-info">
     <div class="image-stats">
-      <img src="${data.pokemonData.sprites.other['official-artwork'].front_default}" alt="">
+      <img src="${data.pokemonData.sprites.other['official-artwork'].front_default}" alt="${data.pokemonData.name} official artwork">
       <div class="pokemon-stats">
-        <div>
-          <h3>HP:</h3>
-          <p id="hp">${data.pokemonData.stats[0].base_stat}</p>
-        </div>
-        <div>
-          <h3>Attack:</h3>
-          <p id="attack">${data.pokemonData.stats[1].base_stat}</p>
-        </div>
-        <div>
-          <h3>Deffense:</h3>
-          <p id="defense">${data.pokemonData.stats[2].base_stat}</p>
-        </div>
-        <div>
-          <h3>Sp. Attack:</h3>
-          <p id="special-attack">${data.pokemonData.stats[3].base_stat}</p>
-        </div>
-        <div>
-          <h3>Sp. Defense:</h3>
-          <p id="special-defense">${data.pokemonData.stats[4].base_stat}</p>
-        </div>
-        <div>
-          <h3>Speed:</h3>
-          <p id="speed">${data.pokemonData.stats[5].base_stat}</p>
-        </div>
+        ${generateStats(data.pokemonData.stats)}
       </div>
     </div>
     <div class="more-info">
@@ -316,12 +365,12 @@ function generateHTML(data) {
       <div id="summary-versions" class="summary-versions">
         <p>Versions: </p>
         <button class="summary-option-1-btn">
-          <img class="pokeball-bw" id="pokeball-bw" src="images/pokeballs/pokeBall-bw.png" alt="">
-          <img class="pokeball" id="pokeball" src="images/pokeballs/pokeBall.png" alt="">
+          <img class="pokeball-bw" id="pokeball-bw" src="images/pokeballs/pokeBall-bw.png" alt="pokeball black and white">
+          <img class="pokeball" id="pokeball" src="images/pokeballs/pokeBall.png" alt="pokeball">
         </button>  
         <button class="summary-option-2-btn">
-          <img class="superball-bw" id="superball-bw" src="images/pokeballs/superBall-bw.png" alt="">
-          <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="">
+          <img class="superball-bw" id="superball-bw" src="images/pokeballs/superBall-bw.png" alt=""superball black and white>
+          <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="superball">
         </button>
       </div>
       <div class="pokemon-details-container">

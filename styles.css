@@ -129,7 +129,7 @@ main {
   padding: 12px;
 }
 
-.image-stats img {
+.image-stats > img {
   width: 100%;
   background-color: #efefef;
   display: block;
@@ -137,17 +137,81 @@ main {
   margin: 0 0 17px;
 }
 
+    /* STATS */
+
 .pokemon-stats {
   background-color: #a4a4a4;
   border-radius: 10px;
   padding: 20px;
   color: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
 }
 
-.pokemon-stats div {
+
+.pokemon-stats > div {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.pokemon-stats > div > div:first-child {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.pokemon-stats img {
+  width: 35px;
+}
+
+.pokemon-stats > div > div:last-child {
+  display: flex;
+  justify-content: center;
+}
+
+.bar-bg {
+  flex: 1;
+  background-color: rgb(117, 117, 117);
+}
+
+.hp-bar {
+  width: 10%;
+  border: 2px solid black;
+  background-color: #FF5959;
+  transition: width 1s;
+}
+
+.attack-bar {
+  width: 30%;
+  border: 2px solid black;
+  background-color: #F5AC78;
+}
+
+.defense-bar {
+  width: 70%;
+  border: 2px solid black;
+  background-color: #FAE078;
+}
+
+.sp-atk-bar {
+  width: 55%;
+  border: 2px solid black;
+  background-color: #9DB7F5;
+}
+
+.sp-def-bar {
+  width: 90%;
+  border: 2px solid black;
+  background-color: #A7DB8D;
+}
+
+.speed-bar {
+  width: 36%;
+  border: 2px solid black;
+  background-color: #FA92B2;
 }
 
   /* MORE INFO */
@@ -254,7 +318,7 @@ main {
 }
 
 .ability-name {
-  margin: 15px 0 0 25px;
+  margin: 15px 15px 0 25px;
 }
 
 .ability-summary {
