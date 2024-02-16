@@ -455,10 +455,6 @@ main {
 
 /* LOADING */
 
-.pokemon-container {
-  display: none;
-}
-
 .loading-container, .details-loading-container {
   display: none;
   align-items: center;

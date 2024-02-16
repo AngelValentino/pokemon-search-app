@@ -373,7 +373,6 @@ function generateType(typeArr) {
 
 function generateHTML(data) {
   const pokeContainerLm = document.getElementById('pokemon-container');
-  pokeContainerLm.style.display = 'initial';
 
   pokeContainerLm.innerHTML = `
   <div class="sprite-name">
