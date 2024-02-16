@@ -120,6 +120,8 @@ function formatSummary(string) {
   }
 }
 
+const formatUnit = (number) => number / 10;
+
 const getStatPct = (number) => Number((number * 100 / 255).toFixed(2));
 
 const generateStatWidth = (number) => number > 0 
@@ -410,9 +412,9 @@ function generateHTML(data) {
         <div class="pokemon-details">
           <div class="first-info-section">
             <h3>Height</h3>
-            <p id="height">${data.pokemonData.height}</p>
+            <p id="height">${formatUnit(data.pokemonData.height)} m</p>
             <h3>Weight</h3>
-            <p id="weight">${data.pokemonData.weight}</p>
+            <p id="weight">${formatUnit(data.pokemonData.weight)} kg</p>
             <h3>Gender</h3>
             <div class="gender-types">
               ${getPokeAvbleGendrs(data)}
