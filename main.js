@@ -378,8 +378,7 @@ function generateHTML(data) {
   pokeContainerLm.innerHTML = `
   <div class="sprite-name">
     <img class="pokemon-sprite" id="sprite" src="${data.pokemonData.sprites.front_default}" alt="${data.pokemonData.name} sprite">
-    <h2 id="pokemon-name">${data.pokemonData.name.toUpperCase()}&nbsp</h2>
-    <h2 id="pokemon-id">#${data.pokemonData.id}</h2>
+    <h2 id="pokemon-name">${data.pokemonData.name.toUpperCase()} #${data.pokemonData.id}</h2>
   </div>
   <div class="pokemon-info">
     <div class="image-stats">
@@ -446,6 +445,7 @@ function displayPokemon() {
 
   getPokemonData(searchVal)
     .then((data) => {
+      inputLm.value = '';
       hidePageTitle();
       hideLoading();
       generateHTML(data);
@@ -457,7 +457,6 @@ function displayPokemon() {
       console.error(err)
     });
 }
-
 
 searchBtnLm.addEventListener('click', displayPokemon);
 
