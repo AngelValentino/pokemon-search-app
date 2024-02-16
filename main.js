@@ -1,22 +1,46 @@
 const inputLm = document.getElementById('search-input');
 const searchBtnLm = document.getElementById('search-button');
 const url = 'https://pokeapi.co/api/v2/pokemon/';
+let pokemonLdgTmtId;
+let abltyLdgTmtId;
 
-// improve loading icon and add skeleton
 // add metric values function
 
 function showLoading() {
-  const loadingTextLm = document.getElementById('loading-text');
-  loadingTextLm.classList.add('show');
+  pokemonLdgTmtId = setTimeout(() => {
+    const loadingLm = document.getElementById('loading-container');
+    loadingLm.style.display = 'flex';
+  }, 100);
 }
 
 function hideLoading() {
-  const loadingTextLm = document.getElementById('loading-text');
-  loadingTextLm.classList.remove('show');
+  clearTimeout(pokemonLdgTmtId);
+  const loadingLm = document.getElementById('loading-container');
+  loadingLm.style.display = 'none';
+}
+
+function showAbilityInfoLoading() {
+  abltyLdgTmtId = setTimeout(() => {
+    const loadingLm = document.getElementById('details-loading-container');
+    loadingLm.style.display = 'flex';
+  }, 100);
+}
+
+function hideAbilityInfoLoading() {
+  clearTimeout(abltyLdgTmtId);
+  const loadingLm = document.getElementById('details-loading-container');
+  loadingLm.style.display = 'none';
+}
+
+function hidePageTitle() {
+  const titleLm = document.getElementById('page-title');
+  if (getComputedStyle(titleLm).display === 'block') {
+    titleLm.style.display = 'none';
+  }
 }
 
 async function getPokemonData(srchVal) {
-  showLoading()
+  showLoading();
   const response = await fetch(url + srchVal);
 
   if (response.status !== 200) {
@@ -38,14 +62,14 @@ async function getPokemonData(srchVal) {
 }
 
 async function getPokemonAbilityData(abilityName) {
-  showLoading()
+  showAbilityInfoLoading();
   const abilityUrl = 'https://pokeapi.co/api/v2/ability/';
 
   const response = await fetch(abilityUrl + abilityName);
   
   if (response.status !== 200) {
     alert("Ability info not found");
-    hideLoading();
+    hideAbilityInfoLoading();
     throw new Error("Couldn't fetch the data.");
   } 
 
@@ -96,7 +120,11 @@ function formatSummary(string) {
   }
 }
 
-const getStatPct = (number) => (number * 100 / 255).toFixed(2);
+const getStatPct = (number) => Number((number * 100 / 255).toFixed(2));
+
+const generateStatWidth = (number) => number > 0 
+  ? `style="width: ${getStatPct(number)}%"`
+  : `style="width: ${getStatPct(number)}%; border: none"`;
 
 function generateStats(arr) {
   const stats = {};
@@ -111,9 +139,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/hp.png" alt="hp icon">
         <p id="hp">${stats.hp}</p>
       </div>
-      <div>
-        <div class="hp-bar" style="width: ${getStatPct(stats.hp)}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="hp-bar" ${generateStatWidth(stats.hp)}></div>
+        <div></div>
       </div>
     </div>
     <div>
@@ -121,9 +149,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/attack.png" alt="attack icon">
         <p id="attack">${stats.attack}</p>
       </div>
-      <div>
-        <div class="attack-bar" style="width: ${getStatPct(stats.attack)}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="attack-bar" ${generateStatWidth(stats.attack)}></div>
+        <div></div>
       </div>
     </div>
     <div>
@@ -131,9 +159,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/defense.png" alt="defense icon">
         <p id="defense">${stats.defense}</p>
       </div>
-      <div>
-        <div class="defense-bar" style="width: ${getStatPct(stats.defense)}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="defense-bar" ${generateStatWidth(stats.defense)}></div>
+        <div></div>
       </div>
     </div>
     <div>
@@ -141,9 +169,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/sp-atk.png" alt="special attack icon">
         <p id="special-attack">${stats['special-attack']}</p>
       </div>
-      <div>
-        <div class="sp-atk-bar" style="width: ${getStatPct(stats['special-attack'])}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="sp-atk-bar" ${generateStatWidth(stats['special-attack'])}></div>
+        <div></div>
       </div>
     </div>
     <div>
@@ -151,9 +179,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/sp-def.png" alt="special defense icon">
         <p id="special-defense">${stats['special-defense']}</p>
       </div>
-      <div>
-        <div class="sp-def-bar" style="width: ${getStatPct(stats['special-defense'])}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="sp-def-bar" ${generateStatWidth(stats['special-defense'])}></div>
+        <div></div>
       </div>
     </div>
     <div>
@@ -161,9 +189,9 @@ function generateStats(arr) {
         <img src="images/stat-icons/speed.png" alt="speed icon">
         <p id="speed">${stats.speed}</p>
       </div>
-      <div>
-        <div class="speed-bar" style="width: ${getStatPct(stats.speed)}%"></div>
-        <div class="bar-bg"></div>
+      <div class="bar-container">
+        <div class="speed-bar" ${generateStatWidth(stats.speed)}></div>
+        <div></div>
       </div>
     </div>
   `;
@@ -183,14 +211,14 @@ function generateAbility(arr) {
       return `
         <div>
           <p class="hidden-ability">${ability.ability.name}</p>
-          <span class="material-symbols-outlined hidden-ability-icon" id="${ability.ability.name}" class="material-symbols-outlined ability-info-icon">help</span>
+          <span class="material-symbols-outlined hidden-ability-info-icon" id="${ability.ability.name}">help</span>
         </div>
       `;
     }
   }).join('');
 }
 
-const generateHiddenTag = (e) => e.target.matches('.hidden-ability-icon') ? ' (hidden)' : '';
+const generateHiddenTag = (e) => e.target.matches('.hidden-ability-info-icon') ? ' (hidden)' : '';
 
 function generateAbilityEvent() {
   const abilitesContainerLm = document.getElementById('abilities-container');
@@ -199,11 +227,10 @@ function generateAbilityEvent() {
   abilitesContainerLm.addEventListener('click', (e) => {
     if (e.target.matches('span')) {
       const abilityName = e.target.id;
-
       getPokemonAbilityData(abilityName)
       .then((abilitydata) => {
-        hideLoading();
-        infoContainerLm.classList.add('show');
+        hideAbilityInfoLoading();
+        infoContainerLm.style.display = "block";
 
         infoContainerLm.innerHTML = `
           <p>Ability information</p>
@@ -216,11 +243,11 @@ function generateAbilityEvent() {
 
         const closeIconLm = document.getElementById('ability-close-icon');
         closeIconLm.addEventListener('click', () => {
-          infoContainerLm.classList.remove('show');
+          infoContainerLm.style.display = 'none';
         });
       })
       .catch((err) => {
-        hideLoading();
+        hideAbilityInfoLoading();
         console.error(err);
       });
     }
@@ -331,7 +358,7 @@ function getPokeAvbleGendrs(data) {
     return `
       <span class="material-symbols-outlined">male</span>
       <span class="material-symbols-outlined">female</span>
-    `
+    `;
   }
 }
 
@@ -346,6 +373,7 @@ function generateType(typeArr) {
 
 function generateHTML(data) {
   const pokeContainerLm = document.getElementById('pokemon-container');
+  pokeContainerLm.style.display = 'initial';
 
   pokeContainerLm.innerHTML = `
   <div class="sprite-name">
@@ -373,15 +401,12 @@ function generateHTML(data) {
           <img class="superball" id="superball" src="images/pokeballs/superBall.png" alt="superball">
         </button>
       </div>
+      <div id="details-loading-container" class="details-loading-container">
+        <p>Loading...</p>
+        <img src="images/running-pikachu.gif" alt="pikachu running">
+      </div>
       <div class="pokemon-details-container">
-        <div id="pokemon-ability-info" class="pokemon-ability-info">
-          <p>Ability information</p>
-          <button class="ability-close-icon-btn">
-            <span id="ability-close-icon" class="material-symbols-outlined ability-close-icon">cancel</span>
-          </button>
-          <h3 class="ability-name">Mar Llamas</h3>
-          <p class="ability-summary">Potencia sus movimientos de tipo Fuego cuando le quedan pocos PS.</p>
-        </div>
+        <div id="pokemon-ability-info" class="pokemon-ability-info"></div>
         <div class="pokemon-details">
           <div class="first-info-section">
             <h3>Height</h3>
@@ -418,15 +443,13 @@ function displayPokemon() {
   if (validateInput(searchVal)) {
     return;
   }
-  
+
   getPokemonData(searchVal)
     .then((data) => {
+      hidePageTitle();
       hideLoading();
-      console.log(data);
-      const entriesArr = data.speciesData.flavor_text_entries;
-
       generateHTML(data);
-      generatePokeSummaryEvent(entriesArr);
+      generatePokeSummaryEvent(data.speciesData.flavor_text_entries);
       generateAbilityEvent();
     })
     .catch((err) => {
@@ -437,3 +460,9 @@ function displayPokemon() {
 
 
 searchBtnLm.addEventListener('click', displayPokemon);
+
+inputLm.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    displayPokemon();
+  }
+});
