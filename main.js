@@ -4,8 +4,6 @@ const url = 'https://pokeapi.co/api/v2/pokemon/';
 let pokemonLdgTmtId;
 let abltyLdgTmtId;
 
-// add metric values function
-
 function showLoading() {
   pokemonLdgTmtId = setTimeout(() => {
     const loadingLm = document.getElementById('loading-container');
